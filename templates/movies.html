@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2 class="text-white fw-bold mb-4 border-bottom border-info pb-2">Tüm Popüler Filmler</h2>
+    
+    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-4">
+        {% for movie in movies %}
+        <div class="col">
+            <div class="card bg-transparent border-0 movie-card shadow position-relative">
+                
+                {% if session.get('username') %}
+                <form action="{{ url_for('add_favorite', movie_id=movie.id) }}" method="POST">
+                    <input type="hidden" name="movie_title" value="{{ movie.title }}">
+                    <input type="hidden" name="movie_poster" value="{{ movie.poster_path }}">
+                    <button type="submit" 
+                            class="quick-fav-btn {% if movie.id in user_fav_ids %}active{% endif %}" 
+                            title="Favorilere Ekle">
+                        <i class="bi {% if movie.id in user_fav_ids %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                    </button>
+                </form>
+                {% endif %}
+
+                <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="text-decoration-none text-white">
+                    <img src="https://image.tmdb.org/t/p/w342{{ movie.poster_path }}" 
+                         class="card-img-top rounded-3 border border-secondary" alt="{{ movie.title }}">
+                    <div class="card-body p-2">
+                        <h6 class="text-truncate mb-1" title="{{ movie.title }}">{{ movie.title }}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-warning small">⭐ {{ movie.vote_average }}</span>
+                            <span class="text-muted small">{{ movie.release_date[:4] if movie.release_date else 'N/A' }}</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="d-flex justify-content-center mt-5 mb-5">
+        <nav>
+            <ul class="pagination">
+                <li class="page-item {{ 'disabled' if current_page == 1 }}">
+                    <a class="page-link bg-dark border-secondary text-white" href="{{ url_for('all_movies', page=current_page-1) }}">Geri</a>
+                </li>
+                <li class="page-item">
+                    <span class="page-link bg-info border-info text-dark fw-bold">{{ current_page }}</span>
+                </li>
+                <li class="page-item">
+                    <a class="page-link bg-dark border-secondary text-white" href="{{ url_for('all_movies', page=current_page+1) }}">İleri</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock %}

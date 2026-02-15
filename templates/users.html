@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <h4 class="text-white mb-4 border-bottom border-secondary pb-2">Kullanıcılar</h4>
+            <div class="list-group shadow">
+                {% for user in all_users %}
+                <a href="/profile/{{ user.username }}" class="list-group-item bg-dark text-white border-secondary d-flex align-items-center gap-3 py-3 hover-item">
+                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0">{{ user.username }}</h6>
+                        <small class="text-muted">Üyelik: {{ user.reg_date }}</small>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <h4 class="text-white mb-4 border-bottom border-secondary pb-2">Son Hareketler</h4>
+            
+            <div class="mb-5">
+                <h5 class="text-info small text-uppercase fw-bold mb-3">Son Film Yorumları</h5>
+                {% if recent_reviews %}
+                    {% for review in recent_reviews %}
+                    <div class="card bg-dark border-secondary mb-3 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex gap-3">
+                                {% if review.movie_poster %}
+                                <img src="https://image.tmdb.org/t/p/w92{{ review.movie_poster }}" 
+                                     class="rounded shadow" style="width: 50px; height: 75px; object-fit: cover;"
+                                     alt="poster">
+                                {% else %}
+                                <div class="bg-secondary rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 75px;">
+                                    <i class="bi bi-film text-dark"></i>
+                                </div>
+                                {% endif %}
+                                
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <h6 class="text-warning mb-1 fw-bold">
+                                            {{ review.movie_title if review.movie_title else 'Film ID: ' ~ review.movie_title }}
+                                        </h6>
+                                        <span class="badge bg-success" style="font-size: 0.7rem;">{{ review.rating }}/10</span>
+                                    </div>
+                                    <p class="small text-white-50 mb-2">"{{ review.comment }}"</p>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <small class="text-info">@{{ review.username }}</small>
+                                        <small class="text-muted" style="font-size: 0.65rem;">• {{ review.date }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="p-3 border border-secondary rounded text-muted small">Henüz yorum yapılmamış.</div>
+                {% endif %}
+            </div>
+
+            <div>
+                <h5 class="text-info small text-uppercase fw-bold mb-3">Yeni Listeler</h5>
+                <div class="row row-cols-1 row-cols-md-2 g-3">
+                    
+                    {% for list in recent_lists %}
+                    <div class="list-item mb-2">
+                        <i class="bi bi-collection-play text-info"></i>
+                        <a href="{{ url_for('view_list', username=list.username, list_name=list.list_name) }}" class="text-white text-decoration-none fw-bold">
+                            {{ list.list_name }}
+                        </a>
+                        <small class="text-muted d-block">Oluşturan: @{{ list.username }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-item { transition: 0.2s; }
+    .hover-item:hover { background-color: #2c3440 !important; transform: translateX(5px); }
+    .hover-list { transition: 0.3s; border-left: 3px solid transparent !important; }
+    .hover-list:hover { border-color: #00e054 !important; border-left: 3px solid #00e054 !important; cursor: pointer; transform: translateY(-3px); }
+</style>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-white fw-bold text-info"><i class="bi bi-gear-fill"></i> Liste Yönetimi</h2>
+        <a href="{{ url_for('favorites') }}" class="btn btn-outline-light rounded-pill btn-sm">Favorilere Dön</a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card bg-dark border-danger p-4 shadow-lg rounded-4">
+                <h5 class="text-white mb-3">Yeni Liste Aç</h5>
+                <form action="{{ url_for('create_list') }}" method="POST">
+                    <input type="text" name="list_name" class="form-control bg-black text-white border-secondary mb-3" placeholder="Liste adı..." required>
+                    <button type="submit" class="btn btn-danger w-100 fw-bold">Oluştur</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card bg-dark border-secondary p-4 shadow-lg rounded-4">
+                <h5 class="text-white mb-3">Mevcut Oynatma Listelerin</h5>
+                <div class="list-group list-group-flush">
+                    {% if existing_lists %}
+                        {% for name in existing_lists %}
+                        <div class="list-group-item bg-dark border-secondary d-flex justify-content-between align-items-center px-0">
+                            <span class="text-white fs-5"><i class="bi bi-collection-play me-2 text-info"></i> {{ name }}</span>
+                            <div class="btn-group">
+                                <a href="{{ url_for('manage_list', list_name=name) }}" class="btn btn-outline-info btn-sm">Düzenle</a>
+                                <form action="{{ url_for('delete_list_entirely', list_name=name) }}" method="POST" style="display:inline;">
+                                    <button class="btn btn-outline-danger btn-sm" onclick="return confirm('Siliyorsun bak emin misin?')">Sil</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Henüz hiç listen yok.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

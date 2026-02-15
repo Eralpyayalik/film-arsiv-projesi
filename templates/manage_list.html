@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4 text-white">
+    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom border-info pb-3">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1">
+                    <li class="breadcrumb-item"><a href="{{ url_for('favorites') }}" class="text-info text-decoration-none">Listelerim</a></li>
+                    <li class="breadcrumb-item active text-white-50" aria-current="page">{{ list_name }}</li>
+                </ol>
+            </nav>
+            <h2 class="mb-0 text-info fw-bold d-flex align-items-center">
+                <i class="bi bi-collection-play-fill me-2"></i> {{ list_name }}
+            </h2>
+            <span class="badge bg-dark border border-info text-info mt-2">
+                <i class="bi bi-film"></i> {{ list_movies|length }} Film Kayıtlı
+            </span>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('favorites') }}" class="btn btn-outline-light btn-sm rounded-pill px-3">
+                <i class="bi bi-arrow-left"></i> Tamamla ve Geri Dön
+            </a>
+            <form action="{{ url_for('delete_list_entirely', list_name=list_name) }}" method="POST" onsubmit="return confirm('Bu listeyi ve içindeki tüm kayıtları silmek istediğine emin misin?');">
+                <button type="submit" class="btn btn-danger btn-sm rounded-pill px-3 shadow">
+                    <i class="bi bi-trash"></i> Listeyi Tamamen Sil
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="mb-5">
+        <h5 class="mb-4 text-secondary small text-uppercase fw-bold ls-2">
+            <i class="bi bi-view-list me-2"></i> Liste İçeriği
+        </h5>
+        
+        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-4">
+            {% if list_movies %}
+                {% for movie in list_movies %}
+                    {% if movie.movie_id != 0 %} 
+                    <div class="col">
+                        <div class="card bg-dark border-0 shadow-sm position-relative movie-item overflow-hidden h-100 rounded-3">
+                            <form action="{{ url_for('remove_from_list', list_id=movie.id) }}" method="POST" class="position-absolute top-0 end-0 m-2" style="z-index: 10;">
+                                <button type="submit" class="btn btn-danger btn-sm p-0 d-flex align-items-center justify-content-center shadow-lg remove-btn" 
+                                        style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid #121212;" title="Listeden Kaldır">
+                                    <i class="bi bi-x-lg" style="font-size: 0.75rem;"></i>
+                                </button>
+                            </form>
+                            
+                            <img src="https://image.tmdb.org/t/p/w500/{{ movie.movie_poster }}" class="card-img-top" alt="{{ movie.movie_title }}">
+                            
+                            <div class="card-body p-2 bg-black bg-opacity-75">
+                                <p class="card-text small text-truncate mb-0 text-center fw-light">{{ movie.movie_title }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="col-12 w-100">
+                    <div class="text-center py-5 bg-dark rounded-4 border border-dashed border-secondary">
+                        <i class="bi bi-plus-circle text-muted display-4 d-block mb-3"></i>
+                        <p class="text-muted">Bu liste henüz boş. Aşağıdaki havuzdan film ekleyebilirsin.</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr class="border-secondary opacity-25 my-5">
+
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
+            <div class="card bg-dark border-secondary shadow-lg rounded-4 overflow-hidden">
+                <div class="card-header bg-black border-secondary py-3">
+                    <h5 class="mb-0 text-warning fw-bold d-flex align-items-center">
+                        <i class="bi bi-stars me-2"></i> Favorilerinden Seç ve Bu Listeye Ekle
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
+                        {% if fav_movies %}
+                            {% for fav in fav_movies %}
+                            <div class="list-group-item bg-dark text-white border-secondary d-flex align-items-center justify-content-between py-3 px-4 hover-item">
+                                <div class="d-flex align-items-center">
+                                    <img src="https://image.tmdb.org/t/p/w92/{{ fav.movie_poster }}" class="rounded shadow-sm me-3" style="width: 40px; height: 55px; object-fit: cover;">
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">{{ fav.movie_title }}</h6>
+                                        <small class="text-white-50">Film ID: {{ fav.movie_id }}</small>
+                                    </div>
+                                </div>
+                                
+                                <form action="{{ url_for('add_to_list', movie_id=fav.movie_id) }}" method="POST">
+                                    <input type="hidden" name="selected_list" value="{{ list_name }}">
+                                    <input type="hidden" name="title" value="{{ fav.movie_title }}">
+                                    <input type="hidden" name="poster" value="{{ fav.movie_poster }}">
+                                    
+                                    <button type="submit" class="btn btn-info btn-sm rounded-pill px-4 shadow fw-bold">
+                                        <i class="bi bi-plus-lg me-1"></i> Ekle
+                                    </button>
+                                </form>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="p-5 text-center">
+                                <i class="bi bi-heartbreak text-muted display-6 d-block mb-3"></i>
+                                <p class="text-muted mb-0">Önce genel havuzuna film eklemelisin.</p>
+                                <a href="/" class="btn btn-link text-info">Film Keşfet</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .ls-2 { letter-spacing: 2px; }
+    .movie-item { transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
+    .movie-item:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.4) !important; }
+    .remove-btn { transition: all 0.2s; opacity: 0.8; }
+    .remove-btn:hover { transform: scale(1.2); opacity: 1; background-color: #ff0000; }
+    .hover-item { transition: 0.3s; border-left: 3px solid transparent !important; }
+    .hover-item:hover { border-left-color: #0dcaf0 !important; background-color: #16191c !important; }
+    .card-img-top { height: 220px; object-fit: cover; }
+    .border-dashed { border-style: dashed !important; }
+    
+    /* İnce Scrollbar tasarımı */
+    .list-group::-webkit-scrollbar { width: 6px; }
+    .list-group::-webkit-scrollbar-track { background: #121212; }
+    .list-group::-webkit-scrollbar-thumb { background: #0dcaf0; border-radius: 10px; }
+</style>
+{% endblock %}

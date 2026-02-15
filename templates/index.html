@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    
+    <section class="mb-5">
+        <h3 class="text-white fw-bold mb-4 border-start border-info border-4 ps-3">Popüler Filmler</h3>
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
+            {% for movie in popular %}
+            <div class="col">
+                <div class="card bg-transparent border-0 movie-card shadow">
+                    <a href="{{ url_for('movie_detail', movie_id=movie.id) }}">
+                        <img src="https://image.tmdb.org/t/p/w342{{ movie.poster_path }}" class="card-img-top rounded-3" alt="{{ movie.title }}">
+                        <div class="card-body p-2">
+                            <h6 class="text-white small text-truncate mb-0">{{ movie.title }}</h6>
+                            <small class="text-warning">⭐ {{ movie.vote_average }}</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="mb-5">
+        <h3 class="text-white fw-bold mb-4 border-start border-warning border-4 ps-3">Efsaneler (Top Rated)</h3>
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
+            {% for movie in top_rated %}
+            <div class="col">
+                <div class="card bg-transparent border-0 movie-card shadow">
+                    <a href="{{ url_for('movie_detail', movie_id=movie.id) }}">
+                        <img src="https://image.tmdb.org/t/p/w342{{ movie.poster_path }}" class="card-img-top rounded-3">
+                        <div class="card-body p-2">
+                            <h6 class="text-white small text-truncate mb-0">{{ movie.title }}</h6>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="mb-5">
+        <h3 class="text-white fw-bold mb-4 border-start border-danger border-4 ps-3">Adrenalin: Aksiyon</h3>
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
+            {% for movie in action %}
+            <div class="col">
+                <div class="card bg-transparent border-0 movie-card shadow">
+                    <a href="{{ url_for('movie_detail', movie_id=movie.id) }}">
+                        <img src="https://image.tmdb.org/t/p/w342{{ movie.poster_path }}" class="card-img-top rounded-3">
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="mb-5">
+        <h3 class="text-white fw-bold mb-4 border-start border-secondary border-4 ps-3">Karanlık Taraf: Korku</h3>
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
+            {% for movie in horror %}
+            <div class="col">
+                <div class="card bg-transparent border-0 movie-card shadow">
+                    <a href="{{ url_for('movie_detail', movie_id=movie.id) }}">
+                        <img src="https://image.tmdb.org/t/p/w342{{ movie.poster_path }}" class="card-img-top rounded-3">
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="mb-5">
+        <h3 class="text-white fw-bold mb-4 border-start border-primary border-4 ps-3">Duygu Yüklü: Dram</h3>
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
+            {% for movie in drama %}
+            <div class="col">
+                <div class="card bg-transparent border-0 movie-card shadow">
+                    <a href="{{ url_for('movie_detail', movie_id=movie.id) }}">
+                        <img src="https://image.tmdb.org/t/p/w342{{ movie.poster_path }}" class="card-img-top rounded-3">
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+</div>
+
+<style>
+    .movie-card { transition: all 0.3s ease; }
+    .movie-card:hover { transform: translateY(-10px) scale(1.02); }
+    .card-img-top { border: 1px solid rgba(255,255,255,0.1); }
+    h3 { text-transform: uppercase; font-size: 1.25rem; letter-spacing: 1px; }
+</style>
+
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="card bg-dark border-secondary p-4 text-center shadow">
+                <div class="rounded-circle bg-info mx-auto mb-3 d-flex align-items-center justify-content-center shadow" 
+                     style="width: 100px; height: 100px; font-size: 2.5rem; color: #14181c; font-weight: 800;">
+                    {{ user.username[0] | upper }}
+                </div>
+                <h2 class="text-white fw-bold mb-1">{{ user.username }}</h2>
+                <p class="text-muted mb-3">{{ user.email }}</p>
+                
+                <div class="d-flex justify-content-around border-top border-secondary pt-3">
+                    <div class="text-center">
+                        <h4 class="text-info mb-0">{{ stats.fav }}</h4>
+                        <small class="text-muted uppercase" style="font-size: 0.7rem;">FAVORİ</small>
+                    </div>
+                    <div class="text-center border-start border-end border-secondary px-4">
+                        <h4 class="text-warning mb-0">{{ stats.comment }}</h4>
+                        <small class="text-muted uppercase" style="font-size: 0.7rem;">YORUM</small>
+                    </div>
+                    <div class="text-center">
+                        <h4 class="text-success mb-0">{{ stats.avg | round(1) if stats.avg else 0 }}</h4>
+                        <small class="text-muted uppercase" style="font-size: 0.7rem;">PUAN</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <h4 class="text-white mb-4 border-bottom border-secondary pb-2">
+                <i class="bi bi-heart-fill text-danger me-2"></i>Favori Filmler
+            </h4>
+            <div class="row row-cols-2 row-cols-md-4 g-3">
+                {% if favorites %}
+                    {% for fav in favorites %}
+                    <div class="col">
+                        <div class="card bg-transparent border-0 hover-zoom">
+                            <a href="/movie/{{ fav.movie_id }}">
+                                <img src="https://image.tmdb.org/t/p/w342{{ fav.movie_poster }}" 
+                                     class="img-fluid rounded shadow border border-secondary movie-img" 
+                                     alt="poster">
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12">
+                        <p class="text-muted italic">Henüz favori film eklenmemiş.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <h4 class="text-white mb-4 border-bottom border-secondary pb-2">
+                <i class="bi bi-chat-left-text-fill text-info me-2"></i>Son Yorumlar
+            </h4>
+            {% if comments %}
+                <div class="row">
+                {% for comment in comments %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card bg-dark border-secondary h-100 shadow-sm">
+                            <div class="card-body d-flex gap-3">
+                                <img src="https://image.tmdb.org/t/p/w92{{ comment.movie_poster }}" 
+                                     style="width: 45px; height: 65px; object-fit: cover;" class="rounded shadow-sm">
+                                <div>
+                                    <h6 class="text-warning mb-1">{{ comment.movie_title }}</h6>
+                                    <p class="text-white-50 small mb-2" style="font-style: italic;">"{{ comment.comment_text }}"</p>
+                                    <small class="text-muted" style="font-size: 0.7rem;">{{ comment.date }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted italic">Henüz yorum yapılmamış.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-zoom { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .hover-zoom:hover { transform: scale(1.08); z-index: 10; }
+    .movie-img:hover { border-color: #00e054 !important; box-shadow: 0 0 15px rgba(0,224,84,0.3) !important; }
+    .uppercase { letter-spacing: 1px; font-weight: 700; }
+</style>
+{% endblock %}

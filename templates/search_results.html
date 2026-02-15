@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
+        <h2 class="text-white fw-bold">
+            <i class="bi bi-search text-info me-2"></i> "{{ query }}" için sonuçlar
+        </h2>
+        <span class="badge bg-info text-dark">{{ movies|length }} sonuç bulundu</span>
+    </div>
+
+    {% if movies %}
+        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-4">
+            {% for movie in movies %}
+            <div class="col">
+                <div class="card bg-dark border-0 h-100 shadow-sm movie-card position-relative">
+                    
+                    {% if session.get('username') %}
+                    <form action="{{ url_for('add_favorite', movie_id=movie.id) }}" method="POST">
+                        <input type="hidden" name="movie_title" value="{{ movie.title }}">
+                        <input type="hidden" name="movie_poster" value="{{ movie.poster_path }}">
+                        <button type="submit" class="quick-fav-btn {% if movie.id in user_fav_ids %}active{% endif %}" title="Favorilere Ekle">
+                            <i class="bi {% if movie.id in user_fav_ids %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                        </button>
+                    </form>
+                    {% endif %}
+
+                    <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="text-decoration-none">
+                        <img src="https://image.tmdb.org/t/p/w342{{ movie.poster_path }}" 
+                             class="card-img-top rounded-3 shadow" alt="{{ movie.title }}">
+                        <div class="card-body p-2 mt-1">
+                            <p class="text-white small fw-bold mb-0 text-truncate">{{ movie.title }}</p>
+                            <small class="text-muted">{{ movie.release_date[:4] if movie.release_date else 'N/A' }}</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-dark bg-opacity-25 border-secondary text-center py-5">
+            <i class="bi bi-exclamation-circle display-4 d-block mb-3 text-muted"></i>
+            <h4 class="text-white">Üzgünüm, aradığın filmi bulamadık.</h4>
+            <p class="text-muted small">Farklı anahtar kelimelerle tekrar denemeye ne dersin?</p>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-info btn-sm mt-3">Ana Sayfaya Dön</a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .movie-card { transition: transform 0.3s; }
+    .movie-card:hover { transform: scale(1.05); }
+    .movie-card img { height: 250px; object-fit: cover; }
+</style>
+{% endblock %}

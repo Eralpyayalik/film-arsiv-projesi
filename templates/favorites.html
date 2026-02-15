@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid mt-4 px-4">
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-3">
+            <h1 class="text-white fw-bold display-5 m-0">
+                <i class="bi bi-heart-fill text-danger"></i> Favorilerim
+            </h1>
+            <a href="{{ url_for('user_lists_page') }}" class="btn btn-info rounded-pill shadow-sm fw-bold px-4 mb-2">
+                <i class="bi bi-gear-fill me-2"></i> Listeleri Yönet
+            </a>
+        </div>
+
+        {% if favorites %}
+            <div class="d-flex flex-row flex-nowrap overflow-auto pb-3 custom-scroll gap-3">
+                {% for fav in favorites %}
+                <div class="movie-card-row flex-shrink-0">
+                    <div class="card bg-dark border-0 shadow-sm h-100">
+                        <a href="{{ url_for('movie_detail', movie_id=fav.movie_id) }}">
+                            <img src="https://image.tmdb.org/t/p/w500/{{ fav.movie_poster }}" class="rounded-3" alt="{{ fav.movie_title }}">
+                        </a>
+                        <form action="{{ url_for('delete_favorite', fav_id=fav.id) }}" method="POST" class="mt-2 text-center">
+                            <button type="submit" class="btn btn-sm btn-outline-danger border-0 w-100" onclick="return confirm('Favorilerden silinsin mi?')">
+                                <i class="bi bi-trash"></i> Kaldır
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="p-4 bg-dark rounded-3 text-muted border border-secondary border-dashed">
+                Henüz favori film eklemedin.
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mt-5">
+        <h2 class="text-white-50 fw-bold mb-4">
+            <i class="bi bi-collection-play-fill text-info"></i> Oynatma Listelerim
+        </h2>
+
+        {% if existing_lists %}
+            {% for list_name in existing_lists %}
+            <div class="mb-5 ps-3 border-start border-info border-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-white mb-0">{{ list_name }}</h4>
+                    <a href="{{ url_for('manage_list', list_name=list_name) }}" class="btn btn-sm btn-link text-info p-0 text-decoration-none">
+                        Listeyi Düzenle <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <div class="d-flex flex-row flex-nowrap overflow-auto pb-3 custom-scroll gap-3">
+                    {% for movie in all_list_movies %}
+                        {% if movie.list_name == list_name %}
+                            <div class="movie-card-row flex-shrink-0">
+                                <div class="card bg-dark border-0 shadow-sm h-100">
+                                    <img src="https://image.tmdb.org/t/p/w500/{{ movie.movie_poster }}" class="rounded-3" alt="{{ movie.movie_title }}">
+                                    
+                                    <form action="{{ url_for('delete_favorite', fav_id=movie.id) if not delete_list_item else url_for('delete_list_item', item_id=movie.id) }}" method="POST" class="mt-2 text-center">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary border-0 w-100" style="font-size: 0.7rem;">
+                                            <i class="bi bi-x-lg"></i> Listeden Çıkar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-dark bg-opacity-25 border-secondary py-4 text-center">
+                <p class="mb-0 text-muted italic">Henüz bir oynatma listen bulunmuyor.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    /* Kart ölçülerini buton sığacak şekilde biraz yükselttim */
+    .movie-card-row { width: 160px; transition: transform 0.3s; margin-bottom: 10px; }
+    .movie-card-row:hover { transform: translateY(-5px); }
+    .movie-card-row img { width: 100%; height: 230px; object-fit: cover; border: 1px solid #333; }
+    
+    .custom-scroll::-webkit-scrollbar { height: 5px; }
+    .custom-scroll::-webkit-scrollbar-track { background: #121212; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #0dcaf0; border-radius: 10px; }
+    .border-dashed { border-style: dashed !important; }
+</style>
+{% endblock %}

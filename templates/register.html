@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card bg-dark border-secondary p-4 shadow-lg" style="width: 100%; max-width: 400px; border-radius: 15px;">
+        <div class="text-center mb-4">
+            <i class="bi bi-film text-danger" style="font-size: 3rem;"></i>
+            <h2 class="text-white fw-bold mt-2">Kayıt Ol</h2>
+            <p class="text-muted small">Kendi kütüphaneni oluşturmaya başla</p>
+        </div>
+
+        <form method="POST" action="/register">
+            <div class="mb-3">
+                <label class="form-label text-white-50 small">E-posta</label>
+                <input type="email" name="email" class="form-control bg-black text-white border-secondary shadow-none py-2" placeholder="film@box.com" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label text-white-50 small">İsim Soyisim</label>
+                <input type="text" name="name" class="form-control bg-black text-white border-secondary shadow-none py-2" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label text-white-50 small">Kullanıcı Adı</label>
+                <input type="text" name="username" class="form-control bg-black text-white border-secondary shadow-none py-2" required>
+            </div>
+            <div class="mb-4">
+                <label class="form-label text-white-50 small">Şifre</label>
+                <input type="password" name="password" class="form-control bg-black text-white border-secondary shadow-none py-2" required>
+            </div>
+            <div class="mb-4">
+                <label class="form-label text-white-50 small">Şifreyi Onayla</label>
+                <input type="password" name="confirm" class="form-control bg-black text-white border-secondary shadow-none py-2" required>
+            </div>
+            <button type="submit" class="btn btn-danger w-100 fw-bold py-2 rounded-pill shadow">Üye Ol</button>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="text-muted small">Zaten üye misin? <a href="/login" class="text-danger text-decoration-none">Giriş Yap</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

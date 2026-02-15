@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5 text-white">
+    <h2 class="fw-bold mb-4 border-bottom pb-2">
+        <i class="bi bi-list-stars text-info"></i> {{ username }} kullanıcısının "{{ list_name }}" listesi
+    </h2>
+
+    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3">
+        {% for movie in list_movies %}
+        <div class="col">
+            <div class="card bg-dark border-0 shadow">
+                <a href="{{ url_for('movie_detail', movie_id=movie.movie_id) }}">
+                    <img src="https://image.tmdb.org/t/p/w342{{ movie.movie_poster }}" class="card-img-top rounded shadow-sm" alt="{{ movie.movie_title }}">
+                </a>
+                <div class="card-body p-2 text-center">
+                    <small class="text-white d-block text-truncate">{{ movie.movie_title }}</small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
