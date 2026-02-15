@@ -48,8 +48,6 @@ class LoginForm(Form):
     username=StringField("Kullanıcı Adı")
     password=PasswordField("Parola")
 
-app = Flask(__name__)
-
 
 app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST')
 app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
@@ -444,9 +442,11 @@ def view_list(username, list_name):
 def users():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-    cursor.execute("SELECT username, DATE_FORMAT(created_at, '%d.%m.%Y') as reg_date FROM users GROUP BY username ORDER BY created_at DESC")
+
+    cursor.execute("SELECT username, DATE_FORMAT(MIN(created_at), '%d.%m.%Y') as reg_date FROM users GROUP BY username ORDER BY MIN(created_at) DESC")
     all_users = cursor.fetchall()
 
+    
     cursor.execute("""
     SELECT c.movie_title, c.movie_poster, c.comment_text as comment, u.username, 
            DATE_FORMAT(c.created_at, '%H:%i - %d.%m.%Y') as date, c.rating
